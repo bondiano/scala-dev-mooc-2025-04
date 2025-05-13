@@ -1,9 +1,8 @@
 package ru.otus
 
-import ru.otus.module1.{concurrency, executors, future}
-import ru.otus.module1.concurrency.{getRatesLocation1, getRatesLocation2, printRunningTime}
-
-import scala.util.{Failure, Success}
+import scala.collection.View
+import ru.otus.module1.collections.ListLike
+import ru.otus.module1.{hof, pattern_matching, type_system, list, opt}
 
 
 object App {
@@ -50,8 +49,7 @@ object App {
 //      .foreach(_ =>  executors.pool1.shutdown())
 //    println("Hello here")
 
-    future
-
-
+    ListLike(1, 2, 3).foreach(println)
+    ListLike("a", "b").headOption.foreach(println)
   }
 }
