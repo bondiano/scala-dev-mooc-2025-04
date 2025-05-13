@@ -2,3 +2,7 @@ target
 .bsp
 .idea
 project/.bloop
+
+.vscode
+.metals
+.bloop
