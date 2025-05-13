@@ -188,20 +188,31 @@ object hof{
    *
    * Реализовать метод printIfAny, который будет печатать значение, если оно есть
    */
-
+  def printIfAny(opt: Option[String]): Unit =
+    opt match {
+      case Some(v) => println(v)
+      case None => ()
+    }
 
   /**
    *
    * Реализовать метод zip, который будет создавать Option от пары значений из 2-х Option
    */
-
+  def zip[A, B](opt1: Option[A], opt2: Option[B]): Option[(A, B)] =
+    (opt1, opt2) match {
+      case (Some(v1), Some(v2)) => Some((v1, v2))
+      case _ => None
+    }
 
   /**
    *
    * Реализовать метод filter, который будет возвращать не пустой Option
    * в случае если исходный не пуст и предикат от значения = true
    */
-
+  def filter[A](opt: Option[A])(p: A => Boolean): Option[A] = opt match {
+    case Some(v) if p(v) => Some(v)
+    case _ => None
+  }
  }
 
  object list {
@@ -215,11 +226,23 @@ object hof{
 
    def treat(a: Option[Animal]) = ???
 
+
+
+
+    /**
+      * Конструктор, позволяющий создать список из N - го числа аргументов
+      * Для этого можно воспользоваться *
+      *
+      * Например, вот этот метод принимает некую последовательность аргументов с типом Int и выводит их на печать
+      * def printArgs(args: Int*) = args.foreach(println(_))
+      *
+      */
     sealed trait List[+T] {
 
      // prepend
-     def ::[TT >: T](elem: TT): List[TT] = ???
-   }
+    def ::[TT >: T](elem: TT): List[TT] =
+      new ::(elem, this)
+    }
     case class ::[T](elem: T, tail: List[T]) extends List[T]
     case object Nil extends List[Nothing]
 
@@ -233,46 +256,69 @@ object hof{
 
    val l2: List[Cat] = List(Cat())
 
-
-
-
-
-
-    /**
-      * Конструктор, позволяющий создать список из N - го числа аргументов
-      * Для этого можно воспользоваться *
-      * 
-      * Например, вот этот метод принимает некую последовательность аргументов с типом Int и выводит их на печать
-      * def printArgs(args: Int*) = args.foreach(println(_))
-      */
-
     /**
       *
       * Реализовать метод reverse который позволит заменить порядок элементов в списке на противоположный
       */
+    def reverse[A](list: List[A]): List[A] = {
+      @tailrec
+      def loop(list: List[A], acc: List[A]): List[A] = list match {
+        case Nil => acc
+        case ::(head, tail) => loop(tail, head :: acc)
+      }
+
+      loop(list, Nil)
+    }
+
+
+    def fold[A, B](list: List[A])(f: (List[B], A) => List[B]): List[B] = {
+      @tailrec
+      def loop(list: List[A], acc: List[B]): List[B] = list match {
+        case Nil => reverse(acc)
+        case ::(head, tail) => loop(tail, f(acc, head))
+      }
+
+      loop(list, Nil)
+    }
 
     /**
       *
       * Реализовать метод map для списка который будет применять некую ф-цию к элементам данного списка
       */
-
+    def map[A, B](list: List[A])(f: A => B): List[B] =
+      fold[A, B](list){(acc, elem) => f(elem) :: acc}
 
     /**
       *
       * Реализовать метод filter для списка который будет фильтровать список по некому условию
       */
+    def filter[A](list: List[A])(p: A => Boolean): List[A] =
+      fold[A, A](list){(acc, elem) => if (p(elem)) elem :: acc else acc}
+
 
     /**
       *
       * Написать функцию incList которая будет принимать список Int и возвращать список,
       * где каждый элемент будет увеличен на 1
       */
-
+    def incList(list: List[Int]): List[Int] =
+      map(list)(_ + 1)
 
     /**
       *
       * Написать функцию shoutString которая будет принимать список String и возвращать список,
       * где к каждому элементу будет добавлен префикс в виде '!'
       */
+    def shoutString(list: List[String]): List[String] =
+      map(list)(s => s"${s}!")
 
+    def test = {
+      val list1 = List(1, 2, 3)
+      val list2 = List("a", "b", "c")
+      val list3 = List(Cat(), Dog())
+
+      println(incList(list1))
+      println(shoutString(list2))
+      println(filter(list3)(_.isInstanceOf[Cat]))
+    }
  }
