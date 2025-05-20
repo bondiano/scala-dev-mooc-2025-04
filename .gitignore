@@ -6,3 +6,4 @@ project/.bloop
 .vscode
 .metals
 .bloop
+.scala-build
