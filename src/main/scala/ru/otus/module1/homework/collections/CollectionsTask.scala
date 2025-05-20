@@ -9,13 +9,15 @@ object CollectionsTask {
    * если isASCIIString is FALSE тогда пусть каждый элемент строки будет в нижнем регистре
    * Пример:
    * capitalizeIgnoringASCII(List("Lorem", "ipsum" ,"dolor", "sit", "amet")) -> List("Lorem", "IPSUM", "DOLOR", "SIT", "AMET")
-   * capitalizeIgnoringASCII(List("Оказывается", "," "ЗвУк", "КЛАВИШЬ", "печатной", "Машинки", "не", "СТАЛ", "ограничивающим", "фактором")) ->
-   * List("Оказывается", "," "звук", "КЛАВИШЬ", "печатной", "машинки", "не", "стал", "ограничивающим", "фактором")
+   * capitalizeIgnoringASCII(List("Оказывается", "," "ЗвУк", "КЛАВИШ", "печатной", "Машинки", "не", "СТАЛ", "ограничивающим", "фактором")) ->
+   * List("Оказывается", "," "звук", "КЛАВИШ", "печатной", "машинки", "не", "стал", "ограничивающим", "фактором")
    * HINT: Тут удобно использовать collect и zipWithIndex
    *
    * **/
   def capitalizeIgnoringASCII(text: List[String]): List[String] = {
-    List.empty
+    text.head :: text.tail.map(str =>
+      if (isASCIIString(str)) str.toUpperCase() else str.toLowerCase()
+    )
   }
 
   /**
@@ -28,7 +30,22 @@ object CollectionsTask {
    * HINT: Для всех возможных комбинаций чисел стоит использовать Map
    * **/
   def numbersToNumericString(text: String): String = {
-    ""
+    val map = Map(
+      "0" -> "zero",
+      "1" -> "one",
+      "2" -> "two",
+      "3" -> "three",
+      "4" -> "four",
+      "5" -> "five",
+      "6" -> "six",
+      "7" -> "seven",
+      "8" -> "eight",
+      "9" -> "nine",
+    )
+
+    map.foldLeft(text) { (acc, pair) =>
+      acc.replace(pair._1, pair._2)
+    }
   }
 
   /**
@@ -46,7 +63,7 @@ object CollectionsTask {
    * Реализуйте метод который примет две коллекции (два источника) и вернёт объединенный список уникальный значений
    **/
   def intersectionAuto(dealerOne: Iterable[Auto], dealerTwo: Iterable[Auto]): Iterable[Auto] = {
-    Iterable.empty
+    dealerOne.toSet.intersect(dealerTwo.toSet)
   }
 
   /**
@@ -55,6 +72,6 @@ object CollectionsTask {
    * и вернёт уникальный список машин обслуживающихся в первом дилерском центре и не обслуживающимся во втором
    **/
   def filterAllLeftDealerAutoWithoutRight(dealerOne: Iterable[Auto], dealerTwo: Iterable[Auto]): Iterable[Auto] = {
-    Iterable.empty
+    dealerOne.toSet.diff(dealerTwo.toSet)
   }
 }
