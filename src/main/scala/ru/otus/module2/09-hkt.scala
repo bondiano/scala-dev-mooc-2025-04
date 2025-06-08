@@ -13,7 +13,18 @@ object higher_kinded_types{
 
 
 
-  def tupleF[F[_], A, B](fa: F[A], fb: F[B]): F[(A, B)] = ???
+  def tupleF[F[_], A, B](fa: F[A], fb: F[B]): F[(A, B)] = {
+    implicit def bindable[F[_], A](container: F[A]): Bindable[F, A] = new Bindable[F, A] {
+      override def map[B](f: A => B): F[B] = container.map(f)
+      override def flatMap[B](f: A => F[B]): F[B] = container.flatMap(f)
+    }
+
+    tupleBindable(fa, fb)
+  }
+
+  val myTuple: Option[(Int, Int)] = tupleF(Some(1), Some(2))
+  val myTuple2: List[(Int, Int)] = tupleF(List(1, 2, 3), List(4, 5, 6))
+  val myTuple3: Either[String, (Int, Int)] = tupleF(Right(1), Right(2))
 
   trait Bindable[F[_], A] {
     def map[B](f: A => B): F[B]
