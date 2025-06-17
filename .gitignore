@@ -4,6 +4,7 @@ target
 project/.bloop
 
 .vscode
+.cursor
 .metals
 .bloop
 .scala-build
