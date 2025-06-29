@@ -5,8 +5,11 @@ lazy val scala213Module = (project in file("scala213Module"))
   .settings(
     name := "Scala 2.13 Module",
     scalaVersion := "2.13.16",
-    libraryDependencies ++= Seq(Dependencies.CatsCore, Dependencies.ScalaTest) ++
-      Dependencies.ZIO
+    libraryDependencies ++= Seq(
+      "org.typelevel" %% "cats-core" % "2.10.0",
+      "org.scalatest" %% "scalatest" % "3.2.18" % Test,
+      "dev.zio" %% "zio" % "2.1.19"
+    )
   )
 
 lazy val scala3Module = (project in file("scala3Module"))
